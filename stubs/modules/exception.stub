@@ -1,0 +1,10 @@
+<?php
+
+namespace $CLASS_NAMESPACE$;
+
+use App\Exceptions\BaseExceptionClass;
+
+class $CLASS$ extends BaseExceptionClass
+{
+    //
+}

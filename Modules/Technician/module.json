@@ -1,0 +1,11 @@
+{
+    "name": "Technician",
+    "alias": "technician",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Technician\\Providers\\TechnicianServiceProvider"
+    ],
+    "files": []
+}

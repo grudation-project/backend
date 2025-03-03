@@ -1,0 +1,14 @@
+- conversations
+- messages in that conversations
+- reactions
+- media
+- replies on messages
+- talk in group
+- online, offline, typing, client events
+- add seen feature to messages
+- add delivered at feature to messages
+- add ability to block user (in the future)
+
+
+- when a new message is sent
+- must check if that message has replies
