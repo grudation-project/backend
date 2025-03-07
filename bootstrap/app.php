@@ -37,7 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
 //        ['prefix' => 'api', 'middleware' => ['api', GeneralHelper::authMiddleware()]],
 //    )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->statefulApi();
+//        $middleware->statefulApi();
         $middleware->validateCsrfTokens(except: [
             'telescope/*',
         ]);
