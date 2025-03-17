@@ -60,4 +60,5 @@ return [
     'maintenance_mode' => 'We are currently under maintenance, please try again later',
     ...BaseTranslationHelper::en(),
     ...\Modules\Auth\Helpers\AuthTranslationHelper::en(),
+    ...\Modules\Service\Helpers\ServiceTranslationHelper::en(),
 ];

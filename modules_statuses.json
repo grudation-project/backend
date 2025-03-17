@@ -1,5 +1,6 @@
 {
     "Manager": true,
     "Technician": true,
-    "Auth": true
+    "Auth": true,
+    "Service": true
 }

@@ -24,7 +24,7 @@ class AccountMustBeActive
             $this->throwNotAuthenticated();
         }
 
-        if (UserStatusEnum::isInActive(auth()->user())) {
+        if (! auth()->user()->status) {
             (new LogoutUser())->handle();
 
             return $this->errorResponse(
@@ -33,14 +33,6 @@ class AccountMustBeActive
                 translate_error_message('user', 'frozen'),
                 additional: ['verified' => true]
             );
-        }
-
-        if (UserTypeEnum::getUserType() == UserTypeEnum::BRANCH) {
-            $branch = auth()->user()->branch;
-
-            if (! $branch->status) {
-                return $this->forbiddenResponse();
-            }
         }
 
         return $next($request);

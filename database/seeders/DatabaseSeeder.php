@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Auth\Database\Seeders\AuthDatabaseSeeder;
+use Modules\Service\Database\Seeders\ServiceDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +16,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AuthDatabaseSeeder::class
+            AuthDatabaseSeeder::class,
+            ServiceDatabaseSeeder::class,
         ]);
     }
 }
