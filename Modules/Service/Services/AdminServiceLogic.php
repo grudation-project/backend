@@ -60,4 +60,18 @@ class AdminServiceLogic
             ]);
         }
     }
+
+    public static function assertNotAssociated($id, $ignoredId = null, string $errorKey = 'service_id')
+    {
+        $exists = Service::query()
+            ->whereDoesntHave('manager', fn($q) => $q->when(!is_null($ignoredId), fn($q2) => $q2->where('id', '<>', $ignoredId)))
+            ->where('id', $id)
+            ->exists();
+
+        if(! $exists) {
+            throw new ValidationErrorsException([
+                $errorKey => translate_error_message('service', 'not_exists')
+            ]);
+        }
+    }
 }

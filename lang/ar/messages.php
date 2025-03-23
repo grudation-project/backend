@@ -102,4 +102,5 @@ return [
     ...BaseTranslationHelper::ar(),
     ...\Modules\Auth\Helpers\AuthTranslationHelper::ar(),
     ...\Modules\Service\Helpers\ServiceTranslationHelper::ar(),
+    ...\Modules\Manager\Helpers\ManagerTranslationHelper::ar(),
 ];

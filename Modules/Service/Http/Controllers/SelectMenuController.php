@@ -15,12 +15,10 @@ class SelectMenuController extends Controller
    public function services()
    {
        $ignoredId = request()->input('ignored_id');
-
+       $onlyUnique = request()->input('only_unique', false);
        $services = Service::query()
            ->latest()
-           ->whereDoesntHave('manager', function($q) use ($ignoredId){
-              $q->when(!is_null($ignoredId), fn($q2) => $q2->where('id', '<>', $ignoredId));
-           })
+           ->when($onlyUnique, fn($q) => $q->onlyUnique($ignoredId))
            ->get(['id', 'name']);
 
        return $this->resourceResponse(ServiceResource::collection($services));
