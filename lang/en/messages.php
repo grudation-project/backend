@@ -61,5 +61,6 @@ return [
     ...BaseTranslationHelper::en(),
     ...\Modules\Auth\Helpers\AuthTranslationHelper::en(),
     ...\Modules\Service\Helpers\ServiceTranslationHelper::en(),
-    ...\Modules\Manager\Helpers\ManagerTranslationHelper::en()
+    ...\Modules\Manager\Helpers\ManagerTranslationHelper::en(),
+    ...\Modules\Technician\Helpers\TechnicianTranslationHelper::en(),
 ];

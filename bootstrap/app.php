@@ -21,6 +21,7 @@ use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Str;
 use Modules\Auth\Helpers\AuthExceptionHelper;
 use Modules\Auth\Http\Middleware\CheckUserType;
+use Modules\Manager\Helpers\ManagerExceptionHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -72,6 +73,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         AuthExceptionHelper::handle($exceptions);
+        ManagerExceptionHelper::handle($exceptions);
 
         $exceptions->renderable(function (ValidationErrorsException $e) use ($httpResponse) {
             return $httpResponse->validationErrorsResponse($e->getErrors());
