@@ -75,4 +75,19 @@ class TechnicianService
     {
         Technician::query()->findOrFail($id)->user->delete();
     }
+
+    public static function exists($managerId, $id, string $errorKey = 'technician_id')
+    {
+        $tech = Technician::query()
+            ->where('manager_id', $managerId)
+            ->find($id);
+
+        if(! $tech)  {
+            throw new ValidationErrorsException([
+                $errorKey => translate_error_message('technician', 'not_exists'),
+            ]);
+        }
+
+        return $tech;
+    }
 }

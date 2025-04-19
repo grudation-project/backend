@@ -14,6 +14,16 @@ class GeneralHelper
         return array_merge(self::getDefaultLoggedUserMiddlewares(['user_type_in:'.UserTypeEnum::ADMIN]));
     }
 
+    public static function userMiddlewares()
+    {
+        return array_merge(self::getDefaultLoggedUserMiddlewares(['user_type_in:'.UserTypeEnum::USER]));
+    }
+
+    public static function technicianMiddlewares()
+    {
+        return array_merge(self::getDefaultLoggedUserMiddlewares(['user_type_in:'.UserTypeEnum::TECHNICIAN]));
+    }
+
     public static function managerMiddlewares()
     {
         return array_merge(self::getDefaultLoggedUserMiddlewares(['user_type_in:'.UserTypeEnum::MANAGER]));

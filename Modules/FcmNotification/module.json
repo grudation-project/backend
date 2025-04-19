@@ -1,0 +1,11 @@
+{
+    "name": "FcmNotification",
+    "alias": "fcmnotification",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\FcmNotification\\Providers\\FcmNotificationServiceProvider"
+    ],
+    "files": []
+}

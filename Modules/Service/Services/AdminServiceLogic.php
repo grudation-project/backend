@@ -74,4 +74,21 @@ class AdminServiceLogic
             ]);
         }
     }
+
+    /**
+     * @throws ValidationErrorsException
+     */
+    public static function exists($id, string $errorKey = 'service_id')
+    {
+        $service = Service::query()->find($id);
+
+        if(! $service)
+        {
+            throw new ValidationErrorsException([
+                $errorKey => translate_error_message('service', 'not_exists'),
+            ]);
+        }
+
+        return $service;
+    }
 }

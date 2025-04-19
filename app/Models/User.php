@@ -68,6 +68,7 @@ class User extends Authenticatable implements ChatUserModel, HasMedia
             'chat_active' => 'boolean',
             'last_time_seen' => 'datetime',
             'status' => 'boolean',
+            'fcm_tokens' => 'array',
         ];
     }
 
@@ -81,8 +82,8 @@ class User extends Authenticatable implements ChatUserModel, HasMedia
         $this->addMediaCollection('avatar')->singleFile();
     }
 
-    public function routeNotificationForFcm(): ?string
+    public function routeNotificationForFcm()
     {
-        return $this->fcm_token;
+        return $this->fcm_tokens;
     }
 }

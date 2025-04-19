@@ -2,5 +2,8 @@
     "Manager": true,
     "Technician": true,
     "Auth": true,
-    "Service": true
+    "Service": true,
+    "Ticket": true,
+    "Chat": true,
+    "FcmNotification": true
 }

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Auth\Database\Seeders\AuthDatabaseSeeder;
 use Modules\Service\Database\Seeders\ServiceDatabaseSeeder;
+use Modules\Ticket\Database\Seeders\TicketDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AuthDatabaseSeeder::class,
             ServiceDatabaseSeeder::class,
+            TicketDatabaseSeeder::class,
         ]);
     }
 }

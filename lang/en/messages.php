@@ -1,6 +1,12 @@
 <?php
 
 use App\Helpers\BaseTranslationHelper;
+use Modules\Auth\Helpers\AuthTranslationHelper;
+use Modules\FcmNotification\Helpers\NotificationTranslationHelper;
+use Modules\Manager\Helpers\ManagerTranslationHelper;
+use Modules\Service\Helpers\ServiceTranslationHelper;
+use Modules\Technician\Helpers\TechnicianTranslationHelper;
+use Modules\Ticket\Helpers\TicketTranslationHelper;
 
 return [
     'created' => 'created successfully',
@@ -59,8 +65,10 @@ return [
     'record_not_found' => 'Could not find the requested resource',
     'maintenance_mode' => 'We are currently under maintenance, please try again later',
     ...BaseTranslationHelper::en(),
-    ...\Modules\Auth\Helpers\AuthTranslationHelper::en(),
-    ...\Modules\Service\Helpers\ServiceTranslationHelper::en(),
-    ...\Modules\Manager\Helpers\ManagerTranslationHelper::en(),
-    ...\Modules\Technician\Helpers\TechnicianTranslationHelper::en(),
+    ...AuthTranslationHelper::en(),
+    ...ServiceTranslationHelper::en(),
+    ...ManagerTranslationHelper::en(),
+    ...TechnicianTranslationHelper::en(),
+    ...TicketTranslationHelper::en(),
+    ...NotificationTranslationHelper::en(),
 ];

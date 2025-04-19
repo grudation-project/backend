@@ -12,6 +12,7 @@
         "php": "^8.2",
         "elattar/fast-paginate": "*",
         "elattar/prepare": "^5.0",
+        "laravel-notification-channels/fcm": "^5.1",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.5",

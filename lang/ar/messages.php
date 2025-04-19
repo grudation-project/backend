@@ -1,6 +1,12 @@
 <?php
 
 use App\Helpers\BaseTranslationHelper;
+use Modules\Auth\Helpers\AuthTranslationHelper;
+use Modules\FcmNotification\Helpers\NotificationTranslationHelper;
+use Modules\Manager\Helpers\ManagerTranslationHelper;
+use Modules\Service\Helpers\ServiceTranslationHelper;
+use Modules\Technician\Helpers\TechnicianTranslationHelper;
+use Modules\Ticket\Helpers\TicketTranslationHelper;
 
 return [
     'created' => 'تم إنشائه بنجاح',
@@ -100,8 +106,10 @@ return [
     'record_not_found' => 'لم نتمكن من العثور على السجل المطلوب',
     'maintenance_mode' => 'نحن حاليًا في وضع الصيانة، يرجى المحاولة مرة أخرى في وقت لاحق',
     ...BaseTranslationHelper::ar(),
-    ...\Modules\Auth\Helpers\AuthTranslationHelper::ar(),
-    ...\Modules\Service\Helpers\ServiceTranslationHelper::ar(),
-    ...\Modules\Manager\Helpers\ManagerTranslationHelper::ar(),
-    ...\Modules\Technician\Helpers\TechnicianTranslationHelper::ar(),
+    ...AuthTranslationHelper::ar(),
+    ...ServiceTranslationHelper::ar(),
+    ...ManagerTranslationHelper::ar(),
+    ...TechnicianTranslationHelper::ar(),
+    ...TicketTranslationHelper::ar(),
+    ...NotificationTranslationHelper::ar(),
 ];
