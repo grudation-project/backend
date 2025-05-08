@@ -20,6 +20,7 @@ class TicketResource extends JsonResource
             'id' => $this->id,
             'title' => $this->whenHas('title'),
             'status' => $this->whenHas('status'),
+            'created_at' => $this->whenHas('created_at'),
             'description' => $this->whenHas('description'),
             'service' => $this->whenLoaded('service', function(){
                return ServiceResource::make($this->service);
