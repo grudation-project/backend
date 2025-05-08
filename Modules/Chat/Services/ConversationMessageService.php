@@ -14,6 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use Modules\Auth\Enums\UserTypeEnum;
 use Modules\Chat\Enums\ConversationTypeEnum;
 use Modules\Chat\Enums\MessageTypeEnum;
 use Modules\Chat\Events\ConversationUpdatedEvent;
@@ -31,7 +32,10 @@ use Modules\Chat\Models\Scopes\MustHaveValidConversation;
 use Modules\Chat\Transformers\ConversationMessageResource;
 use Modules\FcmNotification\Enums\NotificationTypeEnum;
 use Modules\FcmNotification\Notifications\FcmNotification;
+use Modules\Manager\Helpers\ManagerHelper;
 use Modules\Map\Helpers\PointHelper;
+use Modules\Technician\Helpers\TechnicianHelper;
+use Modules\Ticket\Models\Ticket;
 use NotificationChannels\Fcm\FcmChannel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -46,18 +50,20 @@ class ConversationMessageService
 
     public function index($conversationId)
     {
-        $messages = ConversationMessage::query()
+        $ticketId = request()->input('ticket_id');
+
+        return ConversationMessage::query()
             ->when(true, fn (ConversationMessageBuilder $b) => $b
                 ->whereValid($conversationId)
                 ->whereNotDeletedConversation()
                 ->withMessageDetails($conversationId)
                 ->withParentMessageDetails($conversationId)
             )
+            ->when(!is_null($ticketId), fn ($q) => $q->where('ticket_id', $ticketId))
             ->searchable(['content'])
-            ->latest('conversation_messages.created_at')
-            ->paginatedCollection();
+//            ->latest('conversation_messages.created_at')
+            ->get();
 
-        return self::prepareMessages($messages);
     }
 
     public function show($conversationId, $messageId)
@@ -75,15 +81,31 @@ class ConversationMessageService
 
     public function store(array $data, $conversationId): array
     {
+        $userType = UserTypeEnum::getUserType();
+
+        if(isset($data['ticket_id'])){
+            $ticket = Ticket::query()
+            ->when($userType == UserTypeEnum::USER, fn($q) => $q->where('user_id', auth()->id()))
+            ->when($userType == UserTypeEnum::MANAGER, fn($q) => $q->where('manager_id', ManagerHelper::getUserManager()->id))
+            ->when($userType == UserTypeEnum::TECHNICIAN, fn($q) => $q->where('technician_id', TechnicianHelper::getUserTechnician()->id))
+            ->find($data['ticket_id']);
+
+            if(! $ticket) {
+                throw new ValidationErrorsException([
+                    'ticket_id' => translate_error_message('ticket', 'not_exists'),
+                ]);
+            }
+        }
+
         [$message, $conversation, $member] = DB::transaction(function () use ($data, $conversationId) {
             $conversation = $this->findConversation($conversationId);
             ConversationHelper::setConversationContainerInstance($conversation);
 
             $this->validateParentMessage($data, $conversation);
 
-            if (isset($data['location'])) {
-                $data['location'] = PointHelper::destructPoint($data['location']);
-            }
+            // if (isset($data['location'])) {
+            //     $data['location'] = PointHelper::destructPoint($data['location']);
+            // }
 
             $member = $this->findConversationMember($conversation);
 
@@ -216,25 +238,25 @@ class ConversationMessageService
         if (isset($data['media'])) {
             $file = request()->file('media');
 
-            if (
-                in_array($message->type, [MessageTypeEnum::AUDIO, MessageTypeEnum::RECORD])
-            ) {
-                $name = Str::random();
-                $ffmpeg = FFMpeg::create();
-                $audio = $ffmpeg->open($file->getPathname());
-                $audioPath = storage_path("app/public/$name.mp3");
-                $audio->save(new Mp3, $audioPath);
-
-                $message->addMedia($audioPath)
-                    ->preservingOriginal()
-                    ->toMediaCollection('chat_media');
-
-                if (file_exists($audioPath)) {
-                    unlink($audioPath);
-                }
-
-                return;
-            }
+//            if (
+//                in_array($message->type, [MessageTypeEnum::AUDIO, MessageTypeEnum::RECORD])
+//            ) {
+//                $name = Str::random();
+//                $ffmpeg = FFMpeg::create();
+//                $audio = $ffmpeg->open($file->getPathname());
+//                $audioPath = storage_path("app/public/$name.mp3");
+//                $audio->save(new Mp3, $audioPath);
+//
+//                $message->addMedia($audioPath)
+//                    ->preservingOriginal()
+//                    ->toMediaCollection('chat_media');
+//
+//                if (file_exists($audioPath)) {
+//                    unlink($audioPath);
+//                }
+//
+//                return;
+//            }
             $this->fileOperationService->addMedia($message, $data['media'], 'chat_media', request()->file('media')->clientExtension());
         }
     }

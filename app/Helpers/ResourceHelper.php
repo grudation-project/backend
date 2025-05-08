@@ -53,4 +53,25 @@ class ResourceHelper
                 $returnIfNull || ! is_null($resource->{$foreignKey})
             );
     }
+
+    public static function getMediaFullObject($object, string $relationName, string $defaultFileName = 'store.png', bool $shouldReturnDefault = true)
+    {
+        if ($object->relationLoaded($relationName)) {
+            $media = $object->getRelation($relationName)->first();
+
+            return $media ? [
+                'id' => $media->id,
+                'name' => $media->name,
+                'url' => $media->original_url,
+                'size' => $media->size,
+            ] : ($shouldReturnDefault ? [
+                'id' => 0,
+                'name' => null,
+                'url' => asset('/storage/default/store.png'),
+                'size' => 0,
+            ] : null);
+        }
+
+        return null;
+    }
 }

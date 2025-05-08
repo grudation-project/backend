@@ -10,14 +10,15 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Modules\Chat\Enums\ConversationTypeEnum;
 use Modules\Chat\Models\ConversationMember;
 use Modules\Chat\Models\ConversationMessage;
+use Modules\Chat\Models\Scopes\MustHaveValidConversation;
 use Modules\Markable\Entities\Builders\ReactionModelBuilder;
 
 class ConversationBuilder extends Builder
 {
     public static array $otherUserSelectedColumns = [
         'users.id',
-        'users.first_name',
-        'users.last_name',
+        'users.name',
+        'users.name',
         'users.type',
         'users.chat_active',
         'users.last_time_seen',
@@ -25,7 +26,10 @@ class ConversationBuilder extends Builder
 
     public function withConversationDetails($loggedUserId = null, string $operator = '<>'): ConversationBuilder
     {
+        $loggedUserId = $loggedUserId ?: auth()->id();
+
         return $this
+            ->whereMember($loggedUserId)
             ->withOtherUserDetails($loggedUserId, $operator)
             ->withLatestMessageDetails($loggedUserId)
             ->withUnseenMessagesCount($loggedUserId)
@@ -43,7 +47,7 @@ class ConversationBuilder extends Builder
         $seen = request()->input('seen');
 
         return $this->withCount([
-            'unseenMessages' => fn (ConversationMessageBuilder $b) => $b->whereHas(
+            'unseenMessages' => fn (ConversationMessageBuilder $b) => $b->withoutGlobalScope(MustHaveValidConversation::class)->whereHas(
                 'member', fn ($q) => $q->where('member_id', '<>', $userId)
             ),
         ])
@@ -70,16 +74,6 @@ class ConversationBuilder extends Builder
         return $this
             ->with([
                 'latestMessage' => fn (ConversationMessageBuilder|HasOne $b) => $b->withLatestMessageDetails($userId)->withMemberId(),
-                'latestReaction' => function (HasOneThrough $builder) use ($userId) {
-                    $builder->where(function (ReactionModelBuilder $builder) use ($userId) {
-                        $builder
-                            ->whereNull('conversation_messages.deleted_by_user_id')
-                            ->orWhere('conversation_messages.deleted_by_user_id', '<>', $userId ?: auth()->id());
-                    })
-                        ->with([
-                            'markable' => fn (ConversationMessageBuilder|MorphTo $b) => $b->withLatestMessageDetails($userId),
-                        ]);
-                },
             ]);
     }
 
@@ -97,7 +91,7 @@ class ConversationBuilder extends Builder
 
     public function handleSearch()
     {
-        $columns = ['first_name', 'last_name', 'email', 'phone'];
+        $columns = ['name', 'name', 'email', 'phone'];
 
         return $this->when(! is_null(request()->input('handle')), function (ConversationBuilder $query) use ($columns) {
             $query->where(function (ConversationBuilder $query) use ($columns) {
@@ -108,11 +102,11 @@ class ConversationBuilder extends Builder
         });
     }
 
-    public function whereMember($userId = null): ConversationBuilder
+    public function whereMember($userId = null, bool $withoutDeleted = false): ConversationBuilder
     {
         $userId = $userId ?: auth()->id();
 
-        return $this->whereHas('members', fn ($q) => $q->where('member_id', $userId));
+        return $this->whereHas('members', fn ($q) => $q->where('member_id', $userId)->when($withoutDeleted, fn($q) => $q->withoutGlobalScopes()));
     }
 
     public function withCurrentMember($userId = null): ConversationBuilder

@@ -6,7 +6,6 @@ use App\Exceptions\ValidationErrorsException;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Modules\Auth\Enums\UserTypeEnum;
 use Modules\Chat\Enums\ConversationTypeEnum;
 use Modules\Chat\Events\ConversationUpdatedEvent;
 use Modules\Chat\Exceptions\ConversationException;
@@ -22,13 +21,13 @@ class ConversationService
 {
     use UseChatUserModel;
 
-    public function index(): LengthAwarePaginator
+    public function index()
     {
         return Conversation::query()
             ->select('*')
             ->when(true, fn (ConversationBuilder $b) => $b->withConversationDetails()->handleSearch())
             ->orderByRaw('case when pinned = 1 then 0 else 1 end,latest_message_time DESC')
-            ->defaultPaginatedCollection();
+            ->get();
     }
 
     public function show($id, $loggedUserId = null, $operator = '<>')
@@ -53,7 +52,7 @@ class ConversationService
 
             if (! $member) {
                 throw new ValidationErrorsException([
-                    'user_id' => translate_error_message('user', 'not_exists'),
+                    'user_id' => 'User not found',
                 ]);
             }
 
@@ -93,6 +92,7 @@ class ConversationService
         }
 
         if ($conversation) {
+            return $conversation;
             ConversationException::alreadyExists();
         }
 
@@ -204,6 +204,7 @@ class ConversationService
 
     private function allowedToChat(User $target, $conversationType, ?User $from = null): bool
     {
+        return true;
         $from = $from ?: auth()->user();
         $fromType = UserTypeEnum::getUserType($from);
         $targetType = UserTypeEnum::getUserType($target);

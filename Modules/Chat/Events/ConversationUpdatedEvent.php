@@ -3,7 +3,6 @@
 namespace Modules\Chat\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +24,7 @@ class ConversationUpdatedEvent implements ShouldBroadcast, ShouldQueue
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('chat.'.$this->userId),
+            'chat.'.$this->userId
         ];
     }
 

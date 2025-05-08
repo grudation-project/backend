@@ -21,11 +21,9 @@ class ChatUserHelper
     public static function allowedTypes(): array
     {
         return [
-            UserTypeEnum::NORMAL_USER,
-            UserTypeEnum::VENDOR,
-            UserTypeEnum::MAINTENANCE,
-            UserTypeEnum::DELIVERY_MAN,
-            UserTypeEnum::ADMIN,
+            UserTypeEnum::USER,
+            UserTypeEnum::TECHNICIAN,
+            UserTypeEnum::MANAGER,
         ];
     }
 }

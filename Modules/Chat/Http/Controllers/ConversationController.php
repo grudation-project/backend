@@ -23,7 +23,7 @@ class ConversationController extends Controller
     {
         $conversations = $this->conversationService->index();
 
-        return $this->paginatedResponse($conversations, ConversationResource::class);
+        return $this->resourceResponse(ConversationResource::collection($conversations));
     }
 
     public function store(ConversationRequest $request)

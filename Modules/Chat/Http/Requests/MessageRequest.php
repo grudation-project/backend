@@ -23,6 +23,9 @@ class MessageRequest extends FormRequest
             'parent_id' => ValidationRuleHelper::foreignKeyRules([
                 'required' => 'sometimes',
             ]),
+            'ticket_id' => ValidationRuleHelper::foreignKeyRules([
+                'required' => 'nullable',
+            ])
         ];
 
         switch ($this->type) {
@@ -32,7 +35,8 @@ class MessageRequest extends FormRequest
             case MessageTypeEnum::DOCUMENT:
             case MessageTypeEnum::RECORD:
                 $rules['media'] = ValidationRuleHelper::fileRules(false, [
-                    'mimes' => 'mimes:'.$this->getMimes(),
+                    'mimes' => '',
+                    // 'mimes' => 'mimes:'.$this->getMimes(),
                 ]);
 
                 if ($this->type == MessageTypeEnum::RECORD) {

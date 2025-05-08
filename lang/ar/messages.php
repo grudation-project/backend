@@ -2,6 +2,7 @@
 
 use App\Helpers\BaseTranslationHelper;
 use Modules\Auth\Helpers\AuthTranslationHelper;
+use Modules\Chat\Helpers\ChatTranslationHelper;
 use Modules\FcmNotification\Helpers\NotificationTranslationHelper;
 use Modules\Manager\Helpers\ManagerTranslationHelper;
 use Modules\Service\Helpers\ServiceTranslationHelper;
@@ -112,4 +113,5 @@ return [
     ...TechnicianTranslationHelper::ar(),
     ...TicketTranslationHelper::ar(),
     ...NotificationTranslationHelper::ar(),
+    ...ChatTranslationHelper::ar(),
 ];

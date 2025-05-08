@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Auth\Transformers\UserResource;
 use Modules\Map\Helpers\PointHelper;
-use Modules\Markable\Transformers\ReactionResource;
 
 class ConversationMessageResource extends JsonResource
 {
@@ -18,6 +17,7 @@ class ConversationMessageResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'ticket_id' => $this->whenHas('ticket_id'),
             'sender_id' => $this->whenHas('member_id'),
             'type' => $this->whenHas('type'),
             'deleted_for_all' => $this->whenHas('deleted_at', function () {
@@ -41,7 +41,6 @@ class ConversationMessageResource extends JsonResource
             'position' => $this->whenHas('position'),
             'pinned_till' => $this->whenHas('pinned_till'),
             'reactions' => UserResource::collection($this->whenLoaded('reactions')),
-            'latest_reaction' => ReactionResource::make($this->whenLoaded('lastReaction')),
             'user' => $this->when($this->relationLoaded('member') && $this->member->relationLoaded('user'), function () {
                 return UserResource::make($this->member->user);
             }),

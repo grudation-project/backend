@@ -22,26 +22,12 @@ class ConversationMessageController extends Controller
     {
         $messages = $this->conversationMessageService->index($conversation);
 
-        return $this->paginatedResponse($messages, ConversationMessageResource::class);
+        return $this->resourceResponse(ConversationMessageResource::collection($messages));
     }
 
     public function store(MessageRequest $request, $conversation)
     {
-        [$message, $user] = $this->conversationMessageService->store($request->validated(), $conversation);
-        $sender = auth()->user();
-        $name = "$sender->first_name $sender->last_name";
-
-        Notification::send($user, new FcmNotification(
-            $name,
-            $message->content ?: '',
-            additionalData: [
-                'chat_message_type' => $message->type,
-                'model_id' => $message->conversation_id,
-                'type' => NotificationTypeEnum::CHAT,
-                'name' => $name,
-                'avatar' => $sender->avatar->first()->original_url ?? asset('/storage/default/user.png'),
-            ],
-        ));
+        [$message] = $this->conversationMessageService->store($request->validated(), $conversation);
 
         return $this->createdResponse(ConversationMessageResource::make($message));
     }

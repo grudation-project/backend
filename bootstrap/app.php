@@ -2,6 +2,7 @@
 
 use App\Exceptions\InternalServerErrorException;
 use App\Exceptions\ValidationErrorsException;
+use App\Helpers\GeneralHelper;
 use App\Http\Middleware\AccountMustBeActive;
 use App\Http\Middleware\AlwaysAcceptJson;
 use App\Http\Middleware\Authenticate;
@@ -21,6 +22,7 @@ use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Str;
 use Modules\Auth\Helpers\AuthExceptionHelper;
 use Modules\Auth\Http\Middleware\CheckUserType;
+use Modules\Chat\Helpers\ConversationExceptionHelper;
 use Modules\Manager\Helpers\ManagerExceptionHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -33,10 +35,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-//    ->withBroadcasting(
-//        __DIR__.'/../routes/channels.php',
-//        ['prefix' => 'api', 'middleware' => ['api', GeneralHelper::authMiddleware()]],
-//    )
+    ->withBroadcasting(
+        __DIR__.'/../routes/channels.php',
+        ['prefix' => 'api', 'middleware' => GeneralHelper::getDefaultLoggedUserMiddlewares()],
+    )
     ->withMiddleware(function (Middleware $middleware) {
 //        $middleware->statefulApi();
         $middleware->append([
@@ -74,6 +76,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         AuthExceptionHelper::handle($exceptions);
         ManagerExceptionHelper::handle($exceptions);
+        ConversationExceptionHelper::handle($exceptions);
 
         $exceptions->renderable(function (ValidationErrorsException $e) use ($httpResponse) {
             return $httpResponse->validationErrorsResponse($e->getErrors());

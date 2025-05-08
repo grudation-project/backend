@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Chat\Models\ConversationMember;
 use Modules\Chat\Models\ConversationMessage;
-use Modules\Markable\Entities\ReactionModel;
 
 trait ConversationRelations
 {

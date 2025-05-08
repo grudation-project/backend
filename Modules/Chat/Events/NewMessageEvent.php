@@ -24,7 +24,7 @@ class NewMessageEvent implements ShouldBroadcast, ShouldQueue
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('conversations.'.$this->conversationId),
+            'conversations.'.$this->conversationId
         ];
     }
 

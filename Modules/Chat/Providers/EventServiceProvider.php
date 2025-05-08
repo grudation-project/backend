@@ -2,7 +2,9 @@
 
 namespace Modules\Chat\Providers;
 
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Chat\Listeners\DeleteConversationListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        'eloquent.deleting: '. User::class => [
+            DeleteConversationListener::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

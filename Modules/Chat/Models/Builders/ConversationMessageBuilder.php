@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Modules\Chat\Helpers\ConversationMemberHelper;
 use Modules\Chat\Models\ConversationMember;
 use Modules\Chat\Models\ConversationMessage;
+use Modules\Chat\Models\Scopes\MustHaveValidConversation;
+use Modules\Chat\Models\Scopes\MyConversationScope;
 use Modules\Markable\Traits\HasReactions;
 
 class ConversationMessageBuilder extends Builder
 {
-    use HasReactions;
 
     public function withPosition($conversationId, array $selectedColumns = ['*'], string $positionColumn = 'position'): ConversationMessageBuilder
     {
@@ -35,10 +36,9 @@ class ConversationMessageBuilder extends Builder
         return $this
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->withPosition($conversationId)
-            ->withReactionsDetails()
             ->with([
                 'mediaSource',
-                'member.user' => fn (BelongsTo|UserBuilder $b) => $b->select(['users.id', 'users.first_name', 'users.last_name'])->with('avatar'),
+                'member.user' => fn (BelongsTo|UserBuilder $b) => $b->select(['users.id', 'users.name', 'users.name'])->with('avatar'),
             ]);
     }
 
@@ -71,7 +71,10 @@ class ConversationMessageBuilder extends Builder
         $userId = $userId ?: auth()->id();
 
         return $this
-            ->withoutGlobalScope(SoftDeletingScope::class)
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+                MustHaveValidConversation::class,
+            ])
             ->when(true, fn (self $b) => $b->whereNotDeletedConversation($userId))
             ->whereDoesntHave('deletedMessages.conversationMember', fn ($q) => $q->where('member_id', $userId))
             ->select(['id', 'content', 'conversation_id', 'type', 'record_duration', 'seen', 'delivered', 'conversation_member_id', 'created_at', 'deleted_at'])

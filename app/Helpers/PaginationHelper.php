@@ -23,4 +23,9 @@ class PaginationHelper
     {
         return request()->input('page') ?: 1;
     }
+
+    public static function calculatePageByPosition(int $position): float|int
+    {
+        return (int) ceil($position / 20);
+    }
 }
