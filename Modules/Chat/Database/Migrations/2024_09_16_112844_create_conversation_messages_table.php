@@ -24,10 +24,10 @@ return new class extends Migration
         });
 
         // Modify the column type to POINT, set NOT NULL, and set default value
-        DB::statement('ALTER TABLE `conversation_messages` MODIFY `location` POINT NOT NULL DEFAULT ST_GeomFromText(\'POINT(0 0)\')');
-
-        // Add spatial index
-        DB::statement('ALTER TABLE `conversation_messages` ADD SPATIAL INDEX `location_index` (`location`)');
+        // DB::statement('ALTER TABLE `conversation_messages` MODIFY `location` POINT NOT NULL DEFAULT ST_GeomFromText(\'POINT(0 0)\')');
+        //
+        // // Add spatial index
+        // DB::statement('ALTER TABLE `conversation_messages` ADD SPATIAL INDEX `location_index` (`location`)');
     }
 
     public function down(): void

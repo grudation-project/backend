@@ -22,7 +22,7 @@ class ConversationMessageController extends Controller
     {
         $messages = $this->conversationMessageService->index($conversation);
 
-        return $this->resourceResponse(ConversationMessageResource::collection($messages));
+        return $this->paginatedResponse($messages, ConversationMessageResource::class);
     }
 
     public function store(MessageRequest $request, $conversation)

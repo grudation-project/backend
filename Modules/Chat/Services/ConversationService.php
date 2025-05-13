@@ -26,8 +26,8 @@ class ConversationService
         return Conversation::query()
             ->select('*')
             ->when(true, fn (ConversationBuilder $b) => $b->withConversationDetails()->handleSearch())
-            ->orderByRaw('case when pinned = 1 then 0 else 1 end,latest_message_time DESC')
-            ->get();
+            // ->orderByRaw('case when pinned = 1 then 0 else 1 end,latest_message_time DESC')
+            ->paginatedCollection();
     }
 
     public function show($id, $loggedUserId = null, $operator = '<>')

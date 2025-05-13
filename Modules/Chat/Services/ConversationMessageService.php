@@ -52,7 +52,7 @@ class ConversationMessageService
     {
         $ticketId = request()->input('ticket_id');
 
-        return ConversationMessage::query()
+        $conversations = ConversationMessage::query()
             ->when(true, fn (ConversationMessageBuilder $b) => $b
                 ->whereValid($conversationId)
                 ->whereNotDeletedConversation()
@@ -62,7 +62,9 @@ class ConversationMessageService
             ->when(!is_null($ticketId), fn ($q) => $q->where('ticket_id', $ticketId))
             ->searchable(['content'])
 //            ->latest('conversation_messages.created_at')
-            ->get();
+            ->paginatedCollection();
+
+        return self::prepareMessages($conversations);
 
     }
 

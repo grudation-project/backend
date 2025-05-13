@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->json('fcm_tokens')->nullable()->default('[]');
+            $table->json('fcm_tokens')->nullable();
         });
 
         Schema::table('users', function (Blueprint $table) {
