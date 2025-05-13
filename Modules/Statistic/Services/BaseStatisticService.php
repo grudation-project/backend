@@ -12,12 +12,12 @@ class BaseStatisticService
 {
     public static function getTickets(?Builder $builder = null) {
         $allTickets = $openedTickets = $inProcessingTickets = $closedTickets = 0;
-        $tickets = ($builder ?: Ticket::query())
+        $tickets = ($builder ? $builder->clone() : Ticket::query())
             ->latest()
             ->select(['id', 'status', 'created_at'])
             ->cursor();
 
-        $recentTickets = $tickets = ($builder ?: Ticket::query())
+        $recentTickets = $tickets = ($builder ? $builder->clone() : Ticket::query())
             ->latest()
             ->when(true, fn(TicketBuilder $b) => $b->withDetails())
             ->limit(5)
