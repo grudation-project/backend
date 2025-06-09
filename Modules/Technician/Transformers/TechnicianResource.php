@@ -5,6 +5,7 @@ namespace Modules\Technician\Transformers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Auth\Transformers\UserResource;
+use Modules\Service\Transformers\SectionResource;
 
 class TechnicianResource extends JsonResource
 {
@@ -15,7 +16,8 @@ class TechnicianResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => $this->whenLoaded('user', function(){
+            'section' => SectionResource::make($this->whenLoaded('section')),
+            'user' => $this->whenLoaded('user', function () {
                 return UserResource::make($this->user);
             })
         ];

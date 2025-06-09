@@ -2,6 +2,7 @@
 
 namespace Modules\Technician\Http\Requests;
 
+use App\Helpers\ValidationRuleHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\HttpResponse;
 use Illuminate\Validation\ValidationException;
@@ -16,10 +17,15 @@ class TechnicianRequest extends FormRequest
     {
         $inUpdate = !preg_match("/.*technicians$/", $this->url());
 
-        return BaseRegisterRequest::baseRules($inUpdate);
+        return [
+            ...BaseRegisterRequest::baseRules($inUpdate),
+            'section_id' => ValidationRuleHelper::foreignKeyRules([
+                'required' => $inUpdate ? 'sometimes' : 'required',
+            ]),
+        ];
     }
 
-     /**
+    /**
      * @throws ValidationException
      */
     public function failedValidation(Validator $validator): void

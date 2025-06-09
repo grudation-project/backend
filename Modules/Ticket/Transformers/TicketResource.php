@@ -21,17 +21,19 @@ class TicketResource extends JsonResource
             'title' => $this->whenHas('title'),
             'status' => $this->whenHas('status'),
             'created_at' => $this->whenHas('created_at'),
+            'assigned_at' => $this->whenHas('assigned_at'),
+            'maximum_minutes' => $this->whenHas('maximum_minutes'),
             'description' => $this->whenHas('description'),
-            'service' => $this->whenLoaded('service', function(){
-               return ServiceResource::make($this->service);
+            'service' => $this->whenLoaded('service', function () {
+                return ServiceResource::make($this->service);
             }),
-            'user' => $this->whenLoaded('user', function(){
+            'user' => $this->whenLoaded('user', function () {
                 return UserResource::make($this->user);
             }),
-            'manager' => $this->whenLoaded('manager', function(){
+            'manager' => $this->whenLoaded('manager', function () {
                 return ManagerResource::make($this->manager);
             }),
-            'technician' => $this->whenLoaded('technician', function(){
+            'technician' => $this->whenLoaded('technician', function () {
                 return TechnicianResource::make($this->technician);
             }),
         ];

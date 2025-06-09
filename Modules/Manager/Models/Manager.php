@@ -13,7 +13,14 @@ class Manager extends Model
 {
     use PaginationTrait, Searchable;
 
-    protected $fillable = ['user_id', 'service_id'];
+    protected $fillable = ['user_id', 'service_id', 'automatic_assignment'];
+
+    protected function casts()
+    {
+        return [
+            'automatic_assignment' => 'boolean',
+        ];
+    }
 
     public function service()
     {

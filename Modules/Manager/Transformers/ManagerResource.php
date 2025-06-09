@@ -16,10 +16,11 @@ class ManagerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'service' => $this->whenLoaded('service', function(){
+            'automatic_assignment' => $this->whenHas('automatic_assignment'),
+            'service' => $this->whenLoaded('service', function () {
                 return ServiceResource::make($this->service);
             }),
-            'user' => $this->whenLoaded('user', function(){
+            'user' => $this->whenLoaded('user', function () {
                 return UserResource::make($this->user);
             }),
         ];

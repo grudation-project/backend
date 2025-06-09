@@ -12,10 +12,8 @@ class ServiceDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        for($i = 0; $i<20; $i++) {
-            Service::query()->create([
-                'name' => fake()->name(),
-            ]);
-        }
+        Service::query()->create([
+            'name' => fake()->name(),
+        ]);
     }
 }

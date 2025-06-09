@@ -6,7 +6,9 @@ use App\Exceptions\ValidationErrorsException;
 use Illuminate\Support\Facades\Notification;
 use Modules\FcmNotification\Enums\NotificationTypeEnum;
 use Modules\FcmNotification\Notifications\FcmNotification;
+use Modules\Manager\Models\Manager;
 use Modules\Service\Services\AdminServiceLogic;
+use Modules\Technician\Models\Technician;
 use Modules\Ticket\Enums\TicketStatusEnum;
 use Modules\Ticket\Models\Builders\TicketBuilder;
 use Modules\Ticket\Models\Ticket;
@@ -36,19 +38,27 @@ class UserTicketService
         $service = AdminServiceLogic::exists($data['service_id']);
         $manager = $service->manager;
 
-        if(! $manager) {
+        if (! $manager) {
             throw new ValidationErrorsException([
                 'service_id' => translate_word('service_not_associated_with_manager'),
             ]);
         }
 
+        $technician = $this->getAutomaitcAssignedTechnician($manager);
+        $technicianId = $technician ? $technician->id : null;
         $ticket = Ticket::query()->create($data + [
-           'user_id' => auth()->id(),
-           'manager_id' => $manager->id,
-           'status' => TicketStatusEnum::PENDING,
+            'user_id' => auth()->id(),
+            'manager_id' => $manager->id,
+            'status' => $technicianId ? TicketStatusEnum::IN_PROGRESS : TicketStatusEnum::PENDING,
+            'assigned_at' => $technicianId ? now() : null,
+            'technician_id' => $technicianId,
         ]);
 
         self::ticketNotification($ticket->manager->user, $ticket->id, NotificationTypeEnum::TICKET_CREATED);
+
+        if ($technicianId) {
+            self::ticketNotification($ticket->technician->user, $ticket->id, NotificationTypeEnum::TICKET_ASSIGNED);
+        }
 
         return $this->show($ticket->id);
     }
@@ -62,13 +72,13 @@ class UserTicketService
 
         $serviceId = $ticket->service_id;
         $managerId = $ticket->manager_id;
+        $technicianId = null;
 
-        if(isset($data['service_id']))
-        {
+        if (isset($data['service_id'])) {
             $service = AdminServiceLogic::exists($data['service_id']);
             $manager = $service->manager;
 
-            if(! $manager) {
+            if (! $manager) {
                 throw new ValidationErrorsException([
                     'service_id' => translate_word('service_not_associated_with_manager'),
                 ]);
@@ -76,11 +86,23 @@ class UserTicketService
 
             $serviceId = $service->id;
             $managerId = $manager->id;
+            $technician = $this->getAutomaitcAssignedTechnician($manager);
+            $technicianId = $technician ? $technician->id : null;
+        }
+
+        $technicianPayload = [];
+
+        if ($technicianId) {
+            $technicianPayload = [
+                'technician_id' => $technicianId,
+                'assigned_at' => now(),
+            ];
         }
 
         $ticket->update($data + [
             'manager_id' => $managerId,
             'service_id'  => $serviceId,
+            ...$technicianPayload,
         ]);
 
         self::ticketNotification(
@@ -89,12 +111,33 @@ class UserTicketService
             NotificationTypeEnum::TICKET_UPDATED
         );
 
+        if ($technicianId) {
+            self::ticketNotification(
+                $ticket->technician->user,
+                $ticket->id,
+                NotificationTypeEnum::TICKET_ASSIGNED
+            );
+        }
+
         return $this->show($ticket->id);
+    }
+
+    private function getAutomaitcAssignedTechnician(Manager $manager)
+    {
+        if ($manager->automatic_assignment) {
+            return Technician::query()
+                ->where('manager_id', $manager->id)
+                ->withCount('liveTickets')
+                ->orderByRaw('live_tickets_count ASC')
+                ->first();
+        }
+
+        return null;
     }
 
     public static function ticketNotification($user, $ticketId, $notificationType)
     {
-        switch($notificationType) {
+        switch ($notificationType) {
             case NotificationTypeEnum::TICKET_CREATED:
                 $title = 'ticket_created_title';
                 $body = 'ticket_created_body';

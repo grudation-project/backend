@@ -4,7 +4,6 @@ namespace Modules\Ticket\Services;
 
 use App\Exceptions\ValidationErrorsException;
 use Modules\FcmNotification\Enums\NotificationTypeEnum;
-use Modules\Manager\Helpers\ManagerHelper;
 use Modules\Manager\Traits\ManagerSetter;
 use Modules\Technician\Services\TechnicianService;
 use Modules\Ticket\Enums\TicketStatusEnum;
@@ -34,6 +33,18 @@ class ManagerTicketService
             ->findOrFail($id);
     }
 
+    public function update(array $data, $id)
+    {
+        $ticket = Ticket::query()
+            ->where('manager_id', $this->getManager()->id)
+            ->whereIn('status', [TicketStatusEnum::PENDING, TicketStatusEnum::IN_PROGRESS])
+            ->findOrFail($id);
+
+        $ticket->update($data);
+
+        return $this->show($id);
+    }
+
     /**
      * @throws ValidationErrorsException
      */
@@ -50,7 +61,7 @@ class ManagerTicketService
         TechnicianService::exists($this->getManager()->id, $data['technician_id']);
 
         $ticket->update([
-            ... $data,
+            ...$data,
             'status' => TicketStatusEnum::IN_PROGRESS,
         ]);
 

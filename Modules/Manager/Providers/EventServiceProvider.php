@@ -3,6 +3,7 @@
 namespace Modules\Manager\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Manager\Models\Manager;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -11,7 +12,8 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+    ];
 
     /**
      * Indicates if events should be discovered.
@@ -25,8 +27,5 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function configureEmailVerification(): void
-    {
-
-    }
+    protected function configureEmailVerification(): void {}
 }

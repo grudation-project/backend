@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use Modules\Auth\Enums\AuthEnum;
 use Modules\Auth\Enums\UserTypeEnum;
 use Modules\Manager\Models\Manager;
+use Modules\Service\Models\Section;
+use Modules\Service\Models\Service;
 use Modules\Technician\Models\Technician;
 
 class AuthDatabaseSeeder extends Seeder
@@ -17,6 +19,8 @@ class AuthDatabaseSeeder extends Seeder
     public function run(): void
     {
         $userTypes = UserTypeEnum::availableTypes();
+        $services = Service::query()->pluck('id')->toArray();
+        $sections = Section::query()->pluck('id')->toArray();
 
         foreach ($userTypes as $type) {
             $alphaType = UserTypeEnum::alphaTypes()[$type];
@@ -35,13 +39,15 @@ class AuthDatabaseSeeder extends Seeder
                 case UserTypeEnum::MANAGER:
                     Manager::query()->create([
                         'user_id' => $user->id,
+                        'service_id' => $services[array_rand($services)],
                     ]);
                     break;
                 case UserTypeEnum::TECHNICIAN:
-                     Technician::query()->create([
-                         'user_id' => $user->id,
-                         'manager_id' => 1,
-                     ]);
+                    Technician::query()->create([
+                        'user_id' => $user->id,
+                        'manager_id' => 1,
+                        'section_id' => $sections[array_rand($sections)],
+                    ]);
                     break;
             }
         }

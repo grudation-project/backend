@@ -4,6 +4,7 @@ namespace Modules\Ticket\Http\Controllers;
 
 use App\Traits\HttpResponse;
 use Illuminate\Routing\Controller;
+use Modules\Ticket\Http\Requests\ManagerTicketUpdateRequest;
 use Modules\Ticket\Http\Requests\TicketAssignRequest;
 use Modules\Ticket\Http\Requests\TicketFilterRequest;
 use Modules\Ticket\Services\ManagerTicketService;
@@ -13,9 +14,7 @@ class ManagerTicketController extends Controller
 {
     use HttpResponse;
 
-    public function __construct(private readonly ManagerTicketService $managerTicketService)
-    {
-    }
+    public function __construct(private readonly ManagerTicketService $managerTicketService) {}
 
     public function index(TicketFilterRequest $request)
     {
@@ -29,6 +28,13 @@ class ManagerTicketController extends Controller
         $ticket = $this->managerTicketService->show($id);
 
         return $this->resourceResponse(TicketResource::make($ticket));
+    }
+
+    public function update(ManagerTicketUpdateRequest $request, $id)
+    {
+        $ticket = $this->managerTicketService->update($request->validated(), $id);
+
+        return $this->okResponse(TicketResource::make($ticket), message: translate_word('ticket_updated'));
     }
 
     public function assign(TicketAssignRequest $request, $id)

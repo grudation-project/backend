@@ -32,7 +32,7 @@ class AdminManagerService
 
     public function store(array $data)
     {
-        UserService::columnExists($data['user']['email'], columnName:  'email', errorKey: 'email');
+        UserService::columnExists($data['user']['email'], columnName: 'email', errorKey: 'email');
         AdminServiceLogic::assertNotAssociated($data['service_id']);
 
         $managerId = null;
@@ -41,10 +41,11 @@ class AdminManagerService
             ...$data['user']
         ];
 
-        (new BaseRegisterAction)->handle($userPayload, app(Verifiable::class), function($user) use (&$managerId, $data){
+        (new BaseRegisterAction)->handle($userPayload, app(Verifiable::class), function ($user) use (&$managerId, $data) {
             $manager = Manager::query()->create([
                 'user_id' => $user->id,
                 'service_id' => $data['service_id'],
+                'automatic_assignment' => $data['automatic_assignment'] ?? false,
             ]);
 
             $managerId = $manager->id;
@@ -60,18 +61,18 @@ class AdminManagerService
     {
         $manager = Manager::query()->findOrFail($id);
 
-        if(isset($data['user']['email'])) {
+        if (isset($data['user']['email'])) {
             UserService::columnExists($data['user']['email'], $manager->user_id, 'email', 'email');
         }
 
-        if(isset($data['service_id'])) {
+        if (isset($data['service_id'])) {
             AdminServiceLogic::assertNotAssociated($data['service_id'], $manager->id);
         }
 
-        DB::transaction(function() use ($manager, $data){
+        DB::transaction(function () use ($manager, $data) {
             $manager->update($data);
 
-            if(isset($data['user'])) {
+            if (isset($data['user'])) {
                 $manager->user->update($data['user']);
             }
         });

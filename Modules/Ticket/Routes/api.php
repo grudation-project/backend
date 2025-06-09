@@ -19,6 +19,7 @@ Route::group(['prefix' => 'managers/tickets', 'middleware' => GeneralHelper::man
     Route::get('{id}', [ManagerTicketController::class, 'show']);
     Route::post('{id}/assign', [ManagerTicketController::class, 'assign']);
     Route::post('{id}/finish', [ManagerTicketController::class, 'resolve']);
+    Route::patch('{id}', [ManagerTicketController::class, 'update']);
 });
 
 Route::group(['prefix' => 'technicians/tickets', 'middleware' => GeneralHelper::technicianMiddlewares()], function () {

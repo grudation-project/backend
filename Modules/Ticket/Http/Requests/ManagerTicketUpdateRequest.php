@@ -8,17 +8,14 @@ use App\Traits\HttpResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 
-class TicketAssignRequest extends FormRequest
+class ManagerTicketUpdateRequest extends FormRequest
 {
     use HttpResponse;
 
     public function rules(): array
     {
         return [
-            'technician_id' => ValidationRuleHelper::foreignKeyRules(),
-            'maximum_minutes' => ValidationRuleHelper::integerRules([
-                'required' => 'sometimes',
-            ]),
+            'maximum_minutes' => ValidationRuleHelper::integerRules(),
         ];
     }
 

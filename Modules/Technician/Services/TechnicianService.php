@@ -9,6 +9,7 @@ use Modules\Auth\Enums\UserTypeEnum;
 use Modules\Auth\Services\UserService;
 use Modules\Auth\Strategies\Verifiable;
 use Modules\Manager\Traits\ManagerSetter;
+use Modules\Service\Services\AdminSectionService;
 use Modules\Technician\Models\Builders\TechnicianBuilder;
 use Modules\Technician\Models\Technician;
 
@@ -39,15 +40,17 @@ class TechnicianService
      */
     public function store(array $data)
     {
-        UserService::columnExists($data['email'], columnName:  'email', errorKey: 'email');
+        $this->assertValidSection($data['section_id']);
+        UserService::columnExists($data['email'], columnName: 'email', errorKey: 'email');
 
         $technicianId = null;
         $data['type'] = UserTypeEnum::TECHNICIAN;
 
-        (new BaseRegisterAction)->handle($data, app(Verifiable::class), function($user) use (&$technicianId, $data){
+        (new BaseRegisterAction)->handle($data, app(Verifiable::class), function ($user) use (&$technicianId, $data) {
             $technician = Technician::query()->create([
                 'user_id' => $user->id,
                 'manager_id' => $this->getManager()->id,
+                'section_id' => $data['section_id'],
             ]);
 
             $technicianId = $technician->id;
@@ -58,13 +61,20 @@ class TechnicianService
 
     public function update(array $data, $id)
     {
+        if (isset($data['section_id'])) {
+            $this->assertValidSection($data['section_id']);
+        }
+
         $technician = Technician::query()->findOrFail($id);
 
-        if(isset($data['email'])) {
+        if (isset($data['email'])) {
             UserService::columnExists($data['email'], $technician->user_id, 'email', 'email');
         }
 
-        DB::transaction(function() use ($technician, $data){
+        DB::transaction(function () use ($technician, $data) {
+            $technician->update([
+                'section_id' => $data['section_id'] ?? $technician->section_id,
+            ]);
             $technician->user->update($data);
         });
 
@@ -82,12 +92,23 @@ class TechnicianService
             ->where('manager_id', $managerId)
             ->find($id);
 
-        if(! $tech)  {
+        if (! $tech) {
             throw new ValidationErrorsException([
                 $errorKey => translate_error_message('technician', 'not_exists'),
             ]);
         }
 
         return $tech;
+    }
+
+    private function assertValidSection($id)
+    {
+        $section = AdminSectionService::exists($id);
+
+        if ($section->service_id != $this->getManager()->service_id) {
+            throw new ValidationErrorsException([
+                'section_id' => translate_error_message('section', 'not_exists'),
+            ]);
+        }
     }
 }

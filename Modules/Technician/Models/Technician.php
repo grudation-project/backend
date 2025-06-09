@@ -11,7 +11,7 @@ class Technician extends Model
 {
     use TechnicianRelations, Searchable;
 
-    protected $fillable = ['user_id', 'manager_id'];
+    protected $fillable = ['user_id', 'manager_id', 'section_id'];
 
     public function newEloquentBuilder($query)
     {

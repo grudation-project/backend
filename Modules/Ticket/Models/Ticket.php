@@ -23,7 +23,16 @@ class Ticket extends Model
         'service_id',
         'manager_id',
         'technician_id',
+        'assigned_at',
+        'maximum_minutes',
     ];
+
+    protected function casts()
+    {
+        return [
+            'assigned_at' => 'datetime',
+        ];
+    }
 
     public function user()
     {

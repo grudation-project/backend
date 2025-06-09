@@ -8,6 +8,7 @@ class ManagerTranslationHelper
     {
         return [
             'manager' => 'Manager',
+            'manager_setting' => 'Manager settings',
         ];
     }
 
@@ -15,6 +16,7 @@ class ManagerTranslationHelper
     {
         return [
             'manager' => 'المدير',
+            'manager_setting' => 'إعدادات المدير',
         ];
     }
 }

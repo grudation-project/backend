@@ -21,16 +21,19 @@ class ManagerRequest extends FormRequest
             'service_id' => ValidationRuleHelper::foreignKeyRules([
                 'required' => $inUpdate ? 'sometimes' : 'required',
             ]),
+            'automatic_assignment' => ValidationRuleHelper::booleanRules([
+                'required' => 'sometimes',
+            ]),
         ];
 
-        foreach(BaseRegisterRequest::baseRules($inUpdate) as $key => $value) {
+        foreach (BaseRegisterRequest::baseRules($inUpdate) as $key => $value) {
             $rules["user.$key"] = $value;
         }
 
         return $rules;
     }
 
-     /**
+    /**
      * @throws ValidationException
      */
     public function failedValidation(Validator $validator): void

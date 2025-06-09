@@ -4,7 +4,6 @@ namespace Modules\Auth\Http\Controllers;
 
 use App\Traits\HttpResponse;
 use Illuminate\Routing\Controller;
-use Modules\Auth\Http\Requests\Login\DashboardLoginRequest;
 use Modules\Auth\Http\Requests\Login\LoginRequest;
 use Modules\Auth\Services\LoginService;
 use Modules\Auth\Transformers\RefreshTokenResource;
@@ -26,12 +25,12 @@ class LoginController extends Controller
 
     public function loginResponse($user)
     {
-        return $this->okResponse(array_merge([
-            'user' => UserResource::make($user),
-        ],
+        return $this->okResponse(array_merge(
+            [
+                'user' => UserResource::make($user),
+            ],
             SanctumTokenResource::make($user->tokens['token'])->toArray(request()),
             RefreshTokenResource::make($user->tokens['refresh_token'])->toArray(request())
         ), message: translate_word('logged_in'));
     }
-
 }
