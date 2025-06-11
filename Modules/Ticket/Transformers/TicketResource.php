@@ -4,6 +4,7 @@ namespace Modules\Ticket\Transformers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 use Modules\Auth\Transformers\UserResource;
 use Modules\Manager\Transformers\ManagerResource;
 use Modules\Service\Transformers\ServiceResource;
@@ -23,6 +24,15 @@ class TicketResource extends JsonResource
             'created_at' => $this->whenHas('created_at'),
             'assigned_at' => $this->whenHas('assigned_at'),
             'maximum_minutes' => $this->whenHas('maximum_minutes'),
+            'is_overdue' => $this->when(!is_null($this->maximum_minutes), function () {
+                if (is_null($this->assigned_at)) {
+                    return false;
+                }
+
+                $date = Carbon::parse($this->assigned_at)->addMinutes($this->maximum_minutes);
+
+                return $date->isPast();
+            }),
             'description' => $this->whenHas('description'),
             'service' => $this->whenLoaded('service', function () {
                 return ServiceResource::make($this->service);
