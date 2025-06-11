@@ -9,6 +9,7 @@ use Modules\Auth\Transformers\UserResource;
 use Modules\Manager\Transformers\ManagerResource;
 use Modules\Service\Transformers\ServiceResource;
 use Modules\Technician\Transformers\TechnicianResource;
+use Modules\Ticket\Enums\TicketStatusEnum;
 
 class TicketResource extends JsonResource
 {
@@ -25,7 +26,7 @@ class TicketResource extends JsonResource
             'assigned_at' => $this->whenHas('assigned_at'),
             'maximum_minutes' => $this->whenHas('maximum_minutes'),
             'is_overdue' => $this->when(!is_null($this->maximum_minutes), function () {
-                if (is_null($this->assigned_at)) {
+                if (is_null($this->assigned_at) || $this->status != TicketStatusEnum::IN_PROGRESS) {
                     return false;
                 }
 
