@@ -63,6 +63,7 @@ class ManagerTicketService
         $ticket->update([
             ...$data,
             'status' => TicketStatusEnum::IN_PROGRESS,
+            'assigned_at' => $data['technician_id'] != $ticket->technician_id ? now() : null,
         ]);
 
         UserTicketService::ticketNotification(
