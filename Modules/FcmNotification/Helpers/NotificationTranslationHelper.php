@@ -33,7 +33,8 @@ class NotificationTranslationHelper
             'ticket_updated_body' => 'تم تحديث معلومات التذكرة بواسطة المستخدم، انقر لعرض التحديثات',
             'ticket_assigned_title' => 'تذكرة مخصصة',
             'ticket_assigned_body' => 'تم تعيين التذكرة للفني، انقر لعرضها.',
-
+            'ticket_resolved_title' => 'تذكرة محلية',
+            'ticket_resolved_body' => 'تم حل التذكرة بواسطة الفني، انقر لعرضها.',
         ];
     }
 
