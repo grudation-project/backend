@@ -10,14 +10,16 @@ use Modules\Ticket\Transformers\TicketResource;
 
 class BaseStatisticService
 {
-    public static function getTickets(?Builder $builder = null) {
+    public static function getTickets(?Builder $builder = null)
+    {
+        $builderClone  = $builder ? $builder->clone() : Ticket::query()->clone();
         $allTickets = $openedTickets = $inProcessingTickets = $closedTickets = 0;
-        $tickets = ($builder ? $builder->clone() : Ticket::query())
+        $tickets =  $builderClone->clone()
             ->latest()
             ->select(['id', 'status', 'created_at'])
             ->cursor();
 
-        $recentTickets = $tickets = ($builder ? $builder->clone() : Ticket::query())
+        $recentTickets = $builderClone->clone()
             ->latest()
             ->when(true, fn(TicketBuilder $b) => $b->withDetails())
             ->limit(5)
@@ -28,7 +30,7 @@ class BaseStatisticService
         $tickets->each(function ($ticket) use (&$allTickets, &$openedTickets, &$closedTickets, &$inProcessingTickets, &$mappedGroupedTicketsCount) {
             $allTickets++;
 
-            switch($ticket->status) {
+            switch ($ticket->status) {
                 case TicketStatusEnum::PENDING:
                     $openedTickets++;
                     break;
@@ -47,8 +49,8 @@ class BaseStatisticService
 
         $yearGroupedTickets = [];
 
-        for($i = now()->subYears(5)->format('Y'); $i <= now()->format('Y'); $i++) {
-            if(!isset($mappedGroupedTicketsCount[$i])) {
+        for ($i = now()->subYears(5)->format('Y'); $i <= now()->format('Y'); $i++) {
+            if (!isset($mappedGroupedTicketsCount[$i])) {
                 $yearGroupedTickets[] = [
                     'year' => $i + 0,
                     'count' => 0,
