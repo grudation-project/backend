@@ -114,7 +114,7 @@ class LoginService
 
     public static function generateBearerToken($user)
     {
-        $expiresAt = now()->addMinutes(config('sanctum.expiration', 60) ?: 60);
+        $expiresAt = now()->addMinutes(config('sanctum.expiration', 60 * 24) ?: 60 * 24);
 
         return $user->createToken(
             $user->name ?: 'Sample User',
