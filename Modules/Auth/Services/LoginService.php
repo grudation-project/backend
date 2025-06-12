@@ -9,6 +9,7 @@ use Modules\Auth\Enums\AuthEnum;
 use Modules\Auth\Exceptions\LoginException;
 use Modules\Auth\Helpers\UserRelationHelper;
 use Modules\Auth\Traits\VerifiableTrait;
+use Modules\FcmNotification\Http\Controllers\NotificationController;
 use Throwable;
 
 class LoginService
@@ -77,11 +78,11 @@ class LoginService
 
     private function loginUser(User $user, $fcmToken = null): void
     {
-        if ($fcmToken) {
-            $user->forceFill(['fcm_token' => $fcmToken])->save();
-        }
-
         auth()->login($user, true);
+
+        if ($fcmToken) {
+            NotificationController::baseUpdateTokenLogic();
+        }
         $user->forceFill(['last_login_at' => now()])->save();
 
         $user->tokens = self::addBearerToken($user);
