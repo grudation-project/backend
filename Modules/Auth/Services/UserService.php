@@ -16,11 +16,20 @@ class UserService
         string $columnName = 'phone',
         string $errorKey = 'phone'
     ): void {
-        $exists = User::query()->where($columnName, $value)->when(! is_null($id), fn ($q) => $q->where('id', '<>', $id))->exists();
+        $exists = User::query()->where($columnName, $value)->when(! is_null($id), fn($q) => $q->where('id', '<>', $id))->exists();
 
         if ($exists) {
             throw new ValidationErrorsException([
                 $errorKey => translate_error_message($errorKey, 'exists'),
+            ]);
+        }
+    }
+
+    public static function assertValidCollegeEmail(string $email)
+    {
+        if (! str_ends_with($email, '@dmu.edu.eg')) {
+            throw new ValidationErrorsException([
+                'email' => translate_word('invalid_college_email'),
             ]);
         }
     }

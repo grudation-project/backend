@@ -19,6 +19,7 @@ class ProfileService
 
         if (isset($data['email'])) {
             UserService::columnExists($data['email'], auth()->id(), 'email', 'email');
+            UserService::assertValidCollegeEmail($data['email']);
         }
 
         if (isset($data['phone'])) {

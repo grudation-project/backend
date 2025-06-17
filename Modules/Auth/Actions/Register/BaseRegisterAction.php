@@ -26,12 +26,13 @@ class BaseRegisterAction
         try {
             DB::transaction(function () use ($data, $closure, &$errors, $verifiable, $byAdmin, &$user) {
 
-//                if (isset($data['phone'])) {
-//                    UserService::columnExists($data['phone']);
-//                }
+                //                if (isset($data['phone'])) {
+                //                    UserService::columnExists($data['phone']);
+                //                }
 
                 if (isset($data['email'])) {
                     UserService::columnExists($data['email'], columnName: 'email', errorKey: 'email');
+                    UserService::assertValidCollegeEmail($data['email']);
                 }
 
                 $user = User::create($data + [

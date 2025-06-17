@@ -39,14 +39,14 @@ Route::group(['middleware' => GeneralHelper::getDefaultLoggedUserMiddlewares()],
 
     Route::put('password/change_password', [PasswordController::class, 'changePassword']);
 
-//    Route::group(['prefix' => 'phone_number', 'middleware' => [MobileTypesOnlyMiddleware::class]], function () {
-//        Route::post('', [PhoneUpdateController::class, 'sendCode'])->middleware('throttle:1,1');
-//        Route::patch('', [PhoneUpdateController::class, 'update']);
-//    });
+    //    Route::group(['prefix' => 'phone_number', 'middleware' => [MobileTypesOnlyMiddleware::class]], function () {
+    //        Route::post('', [PhoneUpdateController::class, 'sendCode'])->middleware('throttle:1,1');
+    //        Route::patch('', [PhoneUpdateController::class, 'update']);
+    //    });
 
     Route::group(['prefix' => 'profile'], function () {
         Route::get('', [ProfileController::class, 'show']);
-        Route::post('', [ProfileController::class, 'handle']);
+        Route::post('', [ProfileController::class, 'handle'])->middleware(GeneralHelper::userTypeIn());
     });
 
     Route::post('logout', LogoutController::class);
