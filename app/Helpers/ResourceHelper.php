@@ -6,9 +6,8 @@ class ResourceHelper
 {
     public static function getFirstMediaOriginalUrl($object, string $relationName = 'avatar', string $defaultImageName = 'store.png', bool $shouldReturnDefault = true)
     {
-        if($object->relationLoaded($relationName))
-        {
-            return collect($object->getRelation($relationName)->first())->get('original_url') ?: ($shouldReturnDefault ? asset('/storage/default/store.png') : null);
+        if ($object->relationLoaded($relationName)) {
+            return collect($object->getRelation($relationName)->first())->get('original_url') ?: ($shouldReturnDefault ? asset('/storage/default/' + $defaultImageName) : null);
         }
 
         return null;
@@ -16,9 +15,7 @@ class ResourceHelper
 
     public static function getMedia($collectionName, $thisValue, string $relationName = 'mediaPaths', string $defaultFile = 'store.png', bool $shouldReturnDefaultMedia = true)
     {
-        $media = $thisValue->{$relationName}[
-        $thisValue->{$relationName}->search(fn ($item) => $item->collection_name == $collectionName)
-        ]
+        $media = $thisValue->{$relationName}[$thisValue->{$relationName}->search(fn($item) => $item->collection_name == $collectionName)]
             ->original_url ?? null;
 
         return $media ?: ($shouldReturnDefaultMedia ? asset('/storage/default/store.png') : null);
