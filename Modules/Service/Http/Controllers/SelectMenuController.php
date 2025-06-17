@@ -42,10 +42,12 @@ class SelectMenuController extends Controller
 
     public function technicians()
     {
+        $sectionId = request()->input('section_id');
         $technicians = Technician::query()
             ->latest()
             ->with('user:id,name')
             ->where('manager_id', ManagerHelper::getUserManager()->id)
+            ->when(!is_null($sectionId), fn($q) => $q->where('section_id', $sectionId))
             ->get();
 
         return $this->resourceResponse(TechnicianResource::collection($technicians));

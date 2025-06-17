@@ -23,13 +23,13 @@ class UserTicketRequest extends FormRequest
             'description' => ValidationRuleHelper::longTextRules([
                 $inUpdate ? 'sometimes' : 'required',
             ]),
-            'service_id' => ValidationRuleHelper::foreignKeyRules([
+            'section_id' => ValidationRuleHelper::foreignKeyRules([
                 $inUpdate ? 'sometimes' : 'required',
             ]),
         ];
     }
 
-     /**
+    /**
      * @throws ValidationException
      */
     public function failedValidation(Validator $validator): void

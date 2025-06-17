@@ -15,7 +15,7 @@ class TicketBuilder extends Builder
             'user:id,name',
             'manager.user:id,name',
             'technician.user:id,name',
-            'service:id,name',
+            'section.service:services.id,services.name',
         ]);
     }
 
@@ -23,8 +23,8 @@ class TicketBuilder extends Builder
     {
         return Pipeline::send($this)
             ->through([
-                fn($query, $next ) => CreatedAtFilter::handle($query, $next, $filters),
-                fn($query, $next ) => ServiceFilter::handle($query, $next, $filters),
+                fn($query, $next) => CreatedAtFilter::handle($query, $next, $filters),
+                fn($query, $next) => ServiceFilter::handle($query, $next, $filters),
             ])
             ->thenReturn();
     }

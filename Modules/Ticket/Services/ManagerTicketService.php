@@ -58,7 +58,7 @@ class ManagerTicketService
             ])
             ->findOrFail($id);
 
-        TechnicianService::exists($this->getManager()->id, $data['technician_id']);
+        TechnicianService::exists($this->getManager()->id, $ticket->section_id, $data['technician_id']);
 
         $ticket->update([
             ...$data,

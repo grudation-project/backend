@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Notification;
 use Modules\FcmNotification\Enums\NotificationTypeEnum;
 use Modules\FcmNotification\Notifications\FcmNotification;
 use Modules\Manager\Models\Manager;
+use Modules\Service\Models\Section;
+use Modules\Service\Services\AdminSectionService;
 use Modules\Service\Services\AdminServiceLogic;
 use Modules\Technician\Models\Technician;
 use Modules\Ticket\Enums\TicketStatusEnum;
@@ -35,7 +37,8 @@ class UserTicketService
 
     public function store(array $data)
     {
-        $service = AdminServiceLogic::exists($data['service_id']);
+        $section = AdminSectionService::exists($data['section_id']);
+        $service = $section->service;
         $manager = $service->manager;
 
         if (! $manager) {
@@ -44,8 +47,9 @@ class UserTicketService
             ]);
         }
 
-        $technician = $this->getAutomaitcAssignedTechnician($manager);
+        $technician = $this->getAutomaitcAssignedTechnician($manager, $section);
         $technicianId = $technician ? $technician->id : null;
+
         $ticket = Ticket::query()->create($data + [
             'user_id' => auth()->id(),
             'manager_id' => $manager->id,
@@ -70,12 +74,13 @@ class UserTicketService
             ->where('status', TicketStatusEnum::PENDING)
             ->findOrFail($id);
 
-        $serviceId = $ticket->service_id;
+        $sectionId = $ticket->section_id;
         $managerId = $ticket->manager_id;
         $technicianId = null;
 
-        if (isset($data['service_id'])) {
-            $service = AdminServiceLogic::exists($data['service_id']);
+        if (isset($data['section_id'])) {
+            $section = AdminSectionService::exists($data['section_id']);
+            $service = $section->service;
             $manager = $service->manager;
 
             if (! $manager) {
@@ -84,9 +89,9 @@ class UserTicketService
                 ]);
             }
 
-            $serviceId = $service->id;
+            $sectionId = $section->id;
             $managerId = $manager->id;
-            $technician = $this->getAutomaitcAssignedTechnician($manager);
+            $technician = $this->getAutomaitcAssignedTechnician($manager, $section);
             $technicianId = $technician ? $technician->id : null;
         }
 
@@ -101,7 +106,7 @@ class UserTicketService
 
         $ticket->update($data + [
             'manager_id' => $managerId,
-            'service_id'  => $serviceId,
+            'section_id'  => $sectionId,
             ...$technicianPayload,
         ]);
 
@@ -122,10 +127,11 @@ class UserTicketService
         return $this->show($ticket->id);
     }
 
-    private function getAutomaitcAssignedTechnician(Manager $manager)
+    private function getAutomaitcAssignedTechnician(Manager $manager, Section $section)
     {
         if ($manager->automatic_assignment) {
             return Technician::query()
+                ->where('section_id', $section->id)
                 ->where('manager_id', $manager->id)
                 ->withCount('liveTickets')
                 ->orderByRaw('live_tickets_count ASC')

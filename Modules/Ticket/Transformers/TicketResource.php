@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 use Modules\Auth\Transformers\UserResource;
 use Modules\Manager\Transformers\ManagerResource;
+use Modules\Service\Transformers\SectionResource;
 use Modules\Service\Transformers\ServiceResource;
 use Modules\Technician\Transformers\TechnicianResource;
 use Modules\Ticket\Enums\TicketStatusEnum;
@@ -37,6 +38,9 @@ class TicketResource extends JsonResource
             'description' => $this->whenHas('description'),
             'service' => $this->whenLoaded('service', function () {
                 return ServiceResource::make($this->service);
+            }),
+            'section' => $this->whenLoaded('section', function () {
+                return SectionResource::make($this->section);
             }),
             'user' => $this->whenLoaded('user', function () {
                 return UserResource::make($this->user);

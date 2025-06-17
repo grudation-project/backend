@@ -63,8 +63,7 @@ class AdminSectionService
     {
         $section = Section::query()->find($id);
 
-        if(! $section)
-        {
+        if (! $section) {
             throw new ValidationErrorsException([
                 $errorKey => translate_error_message('section', 'not_exists'),
             ]);

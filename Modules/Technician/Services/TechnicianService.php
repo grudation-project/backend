@@ -86,10 +86,11 @@ class TechnicianService
         Technician::query()->findOrFail($id)->user->delete();
     }
 
-    public static function exists($managerId, $id, string $errorKey = 'technician_id')
+    public static function exists($managerId, $id, $sectionId, string $errorKey = 'technician_id')
     {
         $tech = Technician::query()
             ->where('manager_id', $managerId)
+            ->where('section_id', $sectionId)
             ->find($id);
 
         if (! $tech) {

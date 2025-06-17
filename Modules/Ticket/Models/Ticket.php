@@ -7,6 +7,7 @@ use App\Traits\PaginationTrait;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Manager\Models\Manager;
+use Modules\Service\Models\Section;
 use Modules\Service\Models\Service;
 use Modules\Technician\Models\Technician;
 use Modules\Ticket\Models\Builders\TicketBuilder;
@@ -20,7 +21,7 @@ class Ticket extends Model
         'description',
         'status',
         'user_id',
-        'service_id',
+        'section_id',
         'manager_id',
         'technician_id',
         'assigned_at',
@@ -49,9 +50,9 @@ class Ticket extends Model
         return $this->belongsTo(Technician::class);
     }
 
-    public function service()
+    public function section()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Section::class);
     }
 
     public function newEloquentBuilder($query)
