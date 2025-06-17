@@ -32,7 +32,6 @@ class AdminManagerService
 
     public function store(array $data)
     {
-        UserService::columnExists($data['user']['email'], columnName: 'email', errorKey: 'email');
         AdminServiceLogic::assertNotAssociated($data['service_id']);
 
         $managerId = null;
