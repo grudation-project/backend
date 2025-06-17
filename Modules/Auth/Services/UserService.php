@@ -25,11 +25,11 @@ class UserService
         }
     }
 
-    public static function assertValidCollegeEmail(string $email)
+    public static function assertValidCollegeEmail(string $email, string $errorKey = 'email')
     {
         if (! str_ends_with($email, '@dmu.edu.eg')) {
             throw new ValidationErrorsException([
-                'email' => translate_word('invalid_college_email'),
+                $errorKey => translate_word('invalid_college_email'),
             ]);
         }
     }
