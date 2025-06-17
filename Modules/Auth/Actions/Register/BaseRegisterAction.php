@@ -32,7 +32,7 @@ class BaseRegisterAction
 
                 if (isset($data['email'])) {
                     UserService::columnExists($data['email'], columnName: 'email', errorKey: $emailErrorKey);
-                    UserService::assertValidCollegeEmail($data['email'], 'user.email');
+                    UserService::assertValidCollegeEmail($data['email'], $emailErrorKey);
                 }
 
                 $user = User::create($data + [
