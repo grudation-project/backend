@@ -11,6 +11,6 @@ class UserRegister
     {
         $data['type'] = UserTypeEnum::USER;
 
-        return (new BaseRegisterAction)->handle($data, app(Verifiable::class), byAdmin: $byAdmin);
+        return (new BaseRegisterAction)->handle($data, app(Verifiable::class), byAdmin: $byAdmin, emailErrorKey: 'email');
     }
 }

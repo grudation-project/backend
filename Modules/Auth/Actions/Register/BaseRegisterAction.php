@@ -18,20 +18,20 @@ class BaseRegisterAction
     /**
      * @throws ValidationErrorsException
      */
-    public function handle(array $data, Verifiable $verifiable, ?Closure $closure = null, bool $byAdmin = false)
+    public function handle(array $data, Verifiable $verifiable, ?Closure $closure = null, bool $byAdmin = false, string $emailErrorKey = 'user.email')
     {
         $errors = [];
         $user = null;
 
         try {
-            DB::transaction(function () use ($data, $closure, &$errors, $verifiable, $byAdmin, &$user) {
+            DB::transaction(function () use ($data, $closure, &$errors, $verifiable, $byAdmin, &$user, $emailErrorKey) {
 
                 //                if (isset($data['phone'])) {
                 //                    UserService::columnExists($data['phone']);
                 //                }
 
                 if (isset($data['email'])) {
-                    UserService::columnExists($data['email'], columnName: 'email', errorKey: 'user.email');
+                    UserService::columnExists($data['email'], columnName: 'email', errorKey: $emailErrorKey);
                     UserService::assertValidCollegeEmail($data['email'], 'user.email');
                 }
 
