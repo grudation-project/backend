@@ -46,6 +46,7 @@ class AuthTranslationHelper
             'account_deleted' => 'Your account has been deleted',
             'otp_verify_code' => 'Your OTP code is :code',
             'invalid_college_email' => 'The email address must end with @dmu.edu.eg.',
+            'user.email' => 'Email',
         ];
     }
 
@@ -91,6 +92,7 @@ class AuthTranslationHelper
             'account_deleted' => 'لقد تم حذف حسابك بنجاح',
             'otp_verify_code' => 'رمز التحقق الخاص بك هو :code',
             'invalid_college_email' => 'يجب أن يكون عنوان البريد الإلكتروني الخاص بك بنجاح بالنسبة لـ @dmu.edu.eg.',
+            'user.email' => 'البريد الإلكتروني',
         ];
     }
 
