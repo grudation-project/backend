@@ -27,7 +27,7 @@ class UserService
 
     public static function assertValidCollegeEmail(string $email, string $errorKey = 'email')
     {
-        if (! str_ends_with($email, '@dmu.edu.eg') || ! str_ends_with($email, '@cis.dmu.edu.eg')) {
+        if (! str_ends_with($email, '@dmu.edu.eg') && ! str_ends_with($email, '@cis.dmu.edu.eg')) {
             throw new ValidationErrorsException([
                 $errorKey => translate_word('invalid_college_email'),
             ]);
