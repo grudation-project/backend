@@ -46,7 +46,7 @@ Route::group(['middleware' => GeneralHelper::getDefaultLoggedUserMiddlewares()],
 
     Route::group(['prefix' => 'profile'], function () {
         Route::get('', [ProfileController::class, 'show']);
-        Route::post('', [ProfileController::class, 'handle'])->middleware(GeneralHelper::userTypeIn());
+        Route::post('', [ProfileController::class, 'handle']);
     });
 
     Route::post('logout', LogoutController::class);

@@ -8,6 +8,7 @@ use App\Traits\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Modules\Auth\Enums\AuthEnum;
+use Modules\Auth\Enums\UserTypeEnum;
 use Modules\Auth\Http\Requests\ProfileRequest;
 use Modules\Auth\Http\Requests\UpdateLocaleRequest;
 use Modules\Auth\Services\ProfileService;
@@ -27,7 +28,13 @@ class ProfileController extends Controller
      */
     public function handle(ProfileRequest $request, ProfileService $profileService): JsonResponse
     {
-        $result = $profileService->handle($request->validated());
+        $data = $request->validated();
+
+        if (UserTypeEnum::getUserType() != UserTypeEnum::ADMIN) {
+            unset($data['email']);
+        }
+
+        $result = $profileService->handle($data);
 
         $msg = translate_success_message('profile', 'updated');
 
