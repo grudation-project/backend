@@ -82,7 +82,7 @@ class ManagerTicketService
     {
         $ticket = Ticket::query()
             ->where('manager_id', $this->getManager()->id)
-            ->where('status', TicketStatusEnum::IN_PROGRESS)
+            ->where('status', [TicketStatusEnum::IN_PROGRESS, TicketStatusEnum::PENDING])
             ->findOrFail($id);
 
         $ticket->forceFill([
