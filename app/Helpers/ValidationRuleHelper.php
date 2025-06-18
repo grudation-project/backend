@@ -84,7 +84,7 @@ class ValidationRuleHelper
     {
         $rules = [
             'required' => 'required',
-            'numeric' => 'numeric',
+            'numeric' => 'string',
         ];
 
         return static::replaceDefaultRules($rules, $replaceDefaultRules);
