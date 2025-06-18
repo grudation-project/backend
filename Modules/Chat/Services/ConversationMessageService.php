@@ -53,28 +53,31 @@ class ConversationMessageService
         $ticketId = request()->input('ticket_id');
 
         $conversations = ConversationMessage::query()
-            ->when(true, fn (ConversationMessageBuilder $b) => $b
-                ->whereValid($conversationId)
-                ->whereNotDeletedConversation()
-                ->withMessageDetails($conversationId)
-                ->withParentMessageDetails($conversationId)
+            ->when(
+                true,
+                fn(ConversationMessageBuilder $b) => $b
+                    ->whereValid($conversationId)
+                    ->whereNotDeletedConversation()
+                    ->withMessageDetails($conversationId)
+                    ->withParentMessageDetails($conversationId)
             )
-            ->when(!is_null($ticketId), fn ($q) => $q->where('ticket_id', $ticketId))
+            ->when(!is_null($ticketId), fn($q) => $q->where('ticket_id', $ticketId))
             ->searchable(['content'])
-//            ->latest('conversation_messages.created_at')
+            //            ->latest('conversation_messages.created_at')
             ->paginatedCollection();
 
         return self::prepareMessages($conversations);
-
     }
 
     public function show($conversationId, $messageId)
     {
         $message = ConversationMessage::query()
-            ->when(true, fn (ConversationMessageBuilder $b) => $b
-                ->whereValid($conversationId)
-                ->withMessageDetails($conversationId)
-                ->withParentMessageDetails($conversationId)
+            ->when(
+                true,
+                fn(ConversationMessageBuilder $b) => $b
+                    ->whereValid($conversationId)
+                    ->withMessageDetails($conversationId)
+                    ->withParentMessageDetails($conversationId)
             )
             ->findOrFail($messageId);
 
@@ -85,14 +88,14 @@ class ConversationMessageService
     {
         $userType = UserTypeEnum::getUserType();
 
-        if(isset($data['ticket_id'])){
+        if (isset($data['ticket_id'])) {
             $ticket = Ticket::query()
-            ->when($userType == UserTypeEnum::USER, fn($q) => $q->where('user_id', auth()->id()))
-            ->when($userType == UserTypeEnum::MANAGER, fn($q) => $q->where('manager_id', ManagerHelper::getUserManager()->id))
-            ->when($userType == UserTypeEnum::TECHNICIAN, fn($q) => $q->where('technician_id', TechnicianHelper::getUserTechnician()->id))
-            ->find($data['ticket_id']);
+                ->when($userType == UserTypeEnum::USER, fn($q) => $q->where('user_id', auth()->id()))
+                ->when($userType == UserTypeEnum::MANAGER, fn($q) => $q->where('manager_id', ManagerHelper::getUserManager()->id))
+                ->when($userType == UserTypeEnum::TECHNICIAN, fn($q) => $q->where('technician_id', TechnicianHelper::getUserTechnician()->id))
+                ->find($data['ticket_id']);
 
-            if(! $ticket) {
+            if (! $ticket) {
                 throw new ValidationErrorsException([
                     'ticket_id' => translate_error_message('ticket', 'not_exists'),
                 ]);
@@ -167,8 +170,8 @@ class ConversationMessageService
         } else {
             $message = ConversationMessage::query()
                 ->withoutGlobalScope(MustHaveValidConversation::class)
-                ->when(true, fn (ConversationMessageBuilder $b) => $b->whereValid($conversationId)->whereNotDeletedConversation())
-                ->whereHas('conversation', fn (ConversationBuilder|BelongsTo $b) => $b->where('type', ConversationTypeEnum::MINE))
+                ->when(true, fn(ConversationMessageBuilder $b) => $b->whereValid($conversationId)->whereNotDeletedConversation())
+                ->whereHas('conversation', fn(ConversationBuilder|BelongsTo $b) => $b->where('type', ConversationTypeEnum::MINE))
                 ->findOrFail($messageId);
         }
 
@@ -191,7 +194,7 @@ class ConversationMessageService
     protected function findConversation($conversationId, $excludeId = null)
     {
         return Conversation::query()
-            ->when(! is_null($excludeId), fn ($q) => $q->where('id', '<>', $excludeId))
+            ->when(! is_null($excludeId), fn($q) => $q->where('id', '<>', $excludeId))
             ->findOrFail($conversationId);
     }
 
@@ -240,25 +243,25 @@ class ConversationMessageService
         if (isset($data['media'])) {
             $file = request()->file('media');
 
-//            if (
-//                in_array($message->type, [MessageTypeEnum::AUDIO, MessageTypeEnum::RECORD])
-//            ) {
-//                $name = Str::random();
-//                $ffmpeg = FFMpeg::create();
-//                $audio = $ffmpeg->open($file->getPathname());
-//                $audioPath = storage_path("app/public/$name.mp3");
-//                $audio->save(new Mp3, $audioPath);
-//
-//                $message->addMedia($audioPath)
-//                    ->preservingOriginal()
-//                    ->toMediaCollection('chat_media');
-//
-//                if (file_exists($audioPath)) {
-//                    unlink($audioPath);
-//                }
-//
-//                return;
-//            }
+            //            if (
+            //                in_array($message->type, [MessageTypeEnum::AUDIO, MessageTypeEnum::RECORD])
+            //            ) {
+            //                $name = Str::random();
+            //                $ffmpeg = FFMpeg::create();
+            //                $audio = $ffmpeg->open($file->getPathname());
+            //                $audioPath = storage_path("app/public/$name.mp3");
+            //                $audio->save(new Mp3, $audioPath);
+            //
+            //                $message->addMedia($audioPath)
+            //                    ->preservingOriginal()
+            //                    ->toMediaCollection('chat_media');
+            //
+            //                if (file_exists($audioPath)) {
+            //                    unlink($audioPath);
+            //                }
+            //
+            //                return;
+            //            }
             $this->fileOperationService->addMedia($message, $data['media'], 'chat_media', request()->file('media')->clientExtension());
         }
     }
@@ -340,7 +343,7 @@ class ConversationMessageService
 
     public static function prepareMessagesCollection(Collection|\Illuminate\Support\Collection $collection)
     {
-        return $collection->map(fn ($message) => self::prepareMessage($message));
+        return $collection->map(fn($message) => self::prepareMessage($message));
     }
 
     public static function prepareMessage(ConversationMessage $message): ConversationMessage
@@ -353,7 +356,7 @@ class ConversationMessageService
     private function getBasicMessage($conversation, $message)
     {
         return ConversationMessage::query()
-            ->when(true, fn (ConversationMessageBuilder $b) => $b->whereValid($conversation))
+            ->when(true, fn(ConversationMessageBuilder $b) => $b->whereValid($conversation))
             ->whereNotDeletedConversation()
             ->findOrFail($message);
     }
@@ -380,7 +383,7 @@ class ConversationMessageService
                 $member->user,
                 new FcmNotification(
                     'message_title',
-                    'message_body',
+                    $message->content ?: 'attachment',
                     additionalData: [
                         'type' => NotificationTypeEnum::CHAT,
                         'conversation_id' => $conversation->id,
@@ -389,6 +392,12 @@ class ConversationMessageService
                         'message' => json_encode(collect(ConversationMessageResource::make($message))->toArray()),
                     ],
                     viaChannels: [FcmChannel::class],
+                    shouldTranslate: [
+                        'title' => true,
+                    ],
+                    translatedAttributes: [
+                        'ticketId' => $message->ticket_id
+                    ]
                 )
             );
         }

@@ -17,6 +17,7 @@ class ChatTranslationHelper
             'not_member_conversation' => 'You are not a member of this conversation',
             'conversation_seen' => 'You read all messages in this conversation',
             'not_allowed_to_chat_with_user' => 'You are not allowed to chat with this user',
+            'message_title' => 'New message on ticket #:ticketId',
         ];
     }
 
