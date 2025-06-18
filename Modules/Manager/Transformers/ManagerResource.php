@@ -17,6 +17,7 @@ class ManagerResource extends JsonResource
         return [
             'id' => $this->id,
             'automatic_assignment' => $this->whenHas('automatic_assignment'),
+            'service_id' => $this->whenHas('service_id'),
             'service' => $this->whenLoaded('service', function () {
                 return ServiceResource::make($this->service);
             }),

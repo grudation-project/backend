@@ -8,6 +8,7 @@ use Modules\Auth\Actions\LogoutUser;
 use Modules\Auth\Enums\AuthEnum;
 use Modules\Auth\Exceptions\LoginException;
 use Modules\Auth\Helpers\UserRelationHelper;
+use Modules\Auth\Helpers\UserTypeHelper;
 use Modules\Auth\Traits\VerifiableTrait;
 use Modules\FcmNotification\Http\Controllers\NotificationController;
 use Throwable;
@@ -72,6 +73,7 @@ class LoginService
     private function processLogin(User $user, array $data)
     {
         $this->loginUser($user, $data['fcm_token'] ?? null);
+        UserRelationHelper::loadUserRelations($user);
 
         return $user;
     }

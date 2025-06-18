@@ -5,6 +5,7 @@ namespace Modules\Auth\Transformers;
 use App\Helpers\ResourceHelper;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Auth\Enums\AuthEnum;
+use Modules\Manager\Transformers\ManagerResource;
 
 class UserResource extends JsonResource
 {
@@ -41,7 +42,9 @@ class UserResource extends JsonResource
             'last_time_seen' => $this->whenHas('last_time_seen', function () {
                 return ! is_null($this->chat_active) && $this->chat_active ? $this->last_time_seen : null;
             }),
-//            'social_provider' => $this->whenHas('social_provider'),
+            'manager' => $this->whenLoaded('manager', function () {
+                return ManagerResource::make($this->manager);
+            }),
         ];
     }
 

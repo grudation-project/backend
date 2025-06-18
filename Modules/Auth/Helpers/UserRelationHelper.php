@@ -11,9 +11,8 @@ class UserRelationHelper
         $type = $user->type;
 
         switch ($type) {
-            case UserTypeEnum::ADMIN:
-            case UserTypeEnum::ADMIN_EMPLOYEE:
-                self::loadDashboardRelations($user);
+            case UserTypeEnum::MANAGER:
+                $user->load('manager:id,user_id,service_id');
                 break;
         }
     }
