@@ -396,7 +396,9 @@ class ConversationMessageService
                         'title' => true,
                     ],
                     translatedAttributes: [
-                        'ticketId' => $message->ticket_id
+                        'title' => [
+                            'ticketId' => $message->ticket_id,
+                        ]
                     ]
                 )
             );

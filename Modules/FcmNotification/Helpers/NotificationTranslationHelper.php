@@ -18,6 +18,7 @@ class NotificationTranslationHelper
             'ticket_assigned_body' => 'Ticket has been assigned to the technician, click to view.',
             'ticket_resolved_title' => 'Ticket Resolved',
             'ticket_resolved_body' => 'Ticket has been resolved by the technician, click to view.',
+            'message_title' => 'New message on ticket #:ticketId',
         ];
     }
 
@@ -35,6 +36,7 @@ class NotificationTranslationHelper
             'ticket_assigned_body' => 'تم تعيين التذكرة للفني، انقر لعرضها.',
             'ticket_resolved_title' => 'تذكرة محلية',
             'ticket_resolved_body' => 'تم حل التذكرة بواسطة الفني، انقر لعرضها.',
+            'message_title' => 'رسالة جديدة في التذكرة #:ticketId',
         ];
     }
 
