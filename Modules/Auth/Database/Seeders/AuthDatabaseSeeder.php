@@ -27,7 +27,7 @@ class AuthDatabaseSeeder extends Seeder
 
             $user = User::create([
                 'name' => $alphaType,
-                'email' => "$alphaType@admin.com",
+                'email' => "$alphaType@dmu.edu.eg",
                 'phone' => fake()->phoneNumber(),
                 'status' => true,
                 AuthEnum::VERIFIED_AT => now(),

@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             ServiceDatabaseSeeder::class,
             SectionSeeder::class,
             AuthDatabaseSeeder::class,
-            TicketDatabaseSeeder::class,
+            // TicketDatabaseSeeder::class,
         ]);
     }
 }

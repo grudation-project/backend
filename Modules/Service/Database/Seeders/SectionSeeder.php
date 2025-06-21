@@ -17,7 +17,7 @@ class SectionSeeder extends Seeder
 
         for ($i = 0; $i < 2; $i++) {
             Section::query()->create([
-                'name' => fake()->name(),
+                'name' => 'اجهزه محمول',
                 'service_id' => $services[array_rand($services)]
             ]);
         }

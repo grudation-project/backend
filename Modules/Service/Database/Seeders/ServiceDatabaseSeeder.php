@@ -13,7 +13,7 @@ class ServiceDatabaseSeeder extends Seeder
     public function run(): void
     {
         Service::query()->create([
-            'name' => fake()->name(),
+            'name' => 'هاردوير',
         ]);
     }
 }
