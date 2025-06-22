@@ -17,8 +17,8 @@ class TechnicianRequest extends FormRequest
     {
         $inputs = $this->all();
 
-        if (! isset($inputs['password']) || !isset($inputs['password_confirmation'])) {
-            unset($inputs['password'], $inputs['password_confirmation']);
+        if (! isset($inputs['user']['password']) || !isset($inputs['user']['password_confirmation'])) {
+            unset($inputs['user']['password'], $inputs['user']['password_confirmation']);
         }
 
         $this->replace($inputs);
