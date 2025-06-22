@@ -3,7 +3,6 @@
 namespace Modules\Auth\Http\Requests\Register;
 
 use App\Helpers\RequestHelper;
-use App\Helpers\ValidationRuleHelper;
 use App\Traits\HttpResponse;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;

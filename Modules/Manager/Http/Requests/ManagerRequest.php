@@ -13,6 +13,17 @@ class ManagerRequest extends FormRequest
 {
     use HttpResponse;
 
+    public function prepareForValidation(): void
+    {
+        $inputs = $this->all();
+
+        if (! isset($inputs['password']) || !isset($inputs['password_confirmation'])) {
+            unset($inputs['password'], $inputs['password_confirmation']);
+        }
+
+        $this->replace($inputs);
+    }
+
     public function rules(): array
     {
         $inUpdate = $this->method() == 'PUT';
